@@ -35,11 +35,27 @@ print(df.describe())
 
 #Data Visualizations
 #Visualization - 1
+#Line plot of Inflation Expectation Rate over time
 plt.figure(figsize=(12,6))
 plt.plot(df["Date"], df["Rate"], color="navy", linewidth=1)
 plt.title("10-Year Inflation Expectation Rate Over Time", fontsize=16)
 plt.xlabel("Year", fontsize=14)
 plt.ylabel("Inflation Expectation Rate (%)", fontsize=14)
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.tight_layout()
+plt.show()
+
+#Visualization - 2
+#Rolling Average (90 days) vs Daily Rate
+df = df.sort_values("Date").reset_index(drop=True)
+df["Rolling_Mean_90"] = df["Rate"].rolling(window=90, min_periods=1).mean()
+plt.figure(figsize=(12,6))
+plt.plot(df["Date"], df["Rate"], label="Daily Rate", color="lightgray", alpha=0.5)
+plt.plot(df["Date"], df["Rolling_Mean_90"], label="90-Day Average", color="purple", linewidth=2)
+plt.title("10-Year Inflation Expectation: Daily vs 90 Day Average")
+plt.xlabel("Year")
+plt.ylabel("Inflation Expectation Rate (%)")
+plt.legend()
 plt.grid(True, linestyle='--', alpha=0.6)
 plt.tight_layout()
 plt.show()
