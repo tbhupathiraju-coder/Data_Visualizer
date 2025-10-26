@@ -73,4 +73,65 @@ plt.ylabel("Average Rate (%)", fontsize=14)
 plt.tight_layout()
 plt.show()
 
+#Visualization - 4
+#Box Plot by Year
+plt.figure(figsize=(12,6))
+sns.boxplot(x="Year", y="Rate", hue="Year", data=annual_avg, palette="cool", legend=False)
+plt.title("Distribution of Inflation Expectation Rate by Year", fontsize=16)
+plt.xticks(rotation=45)
+plt.xlabel("Year", fontsize=14)
+plt.ylabel("Inflation Expectation Raten(%)", fontsize=14)
+plt.tight_layout()
+plt.show()
+
+#Visualization - 5
+#Heatmap of Monthly Average Rates
+df["Month"] = df["Date"].dt.month
+monthly_avg = df.groupby(["Year", "Month"])["Rate"].mean().unstack()
+plt.figure(figsize=(12,6))
+sns.heatmap(monthly_avg, cmap="YlGnBu", annot=False)
+plt.title("Heatmap of Monthly Average Inflation Rates", fontsize=16)
+plt.xlabel("Month", fontsize=14)
+plt.ylabel("Year", fontsize=14)
+plt.tight_layout()
+plt.show()
+
+#Visualization - 6
+#Histogram for Rate Distribution
+plt.figure(figsize=(10,6))
+sns.histoplot(df["Rate"], bins=30, kde=True, color="teal")
+plt.title("Distribution of Inflation Expectation Rates", fontsize=16)
+plt.xlabel("Inflation Expectation Rate (%)", fontsize=14)
+plt.ylabel("Frequency", fontsize=14)
+plt.tight_layout()
+plt.show()
+
+#Visualization - 7
+#Scatter Plot with Regression Line
+plt.figure(figsize=(12,6))
+sns.regplot(x="Date", y="Rate", data=df, scatter_kws={"s":10})
+plt.title("Scatter Plot with Regression of Inflation Rate Over Time", fontsize=16)
+plt.xlabel("Year", fontsize=14)
+plt.ylabel("Inflation Expectation Rate (%)", fontsize=14)
+plt.tight_layout()
+plt.show()
+
+#Visualization - 8
+#Pie Chart of Average Inflation by Year
+plt.figure(figsize=(8,8))
+plt.pie(
+    annual_avg["Rate"],
+    labels=annual_avg["Year"],
+    autopct="%1.1f%%",
+    startangle=140,
+    colors=plt.cm.plasma(np.linespace(0, 1, len(annual_avg)))
+)
+plt.title("Proportion of Average Inflation Expectations by Year")
+plt.tight_layout()
+plt.show()
+
+#Visualization - 9
+#Main Trends Highlight
+plt.figure(figsize=(12,6))
+
 
