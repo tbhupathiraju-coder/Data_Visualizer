@@ -60,3 +60,17 @@ plt.grid(True, linestyle='--', alpha=0.6)
 plt.tight_layout()
 plt.show()
 
+#Visualization - 3
+#Average Bar Plot by Year
+df["Year"] = df["Date"].dt.year
+annual_avg = df.groupby("Year")["Rate"].mean().reset_index()
+plt.figure(figsize=(12,6))
+sns.barplot(x="Year", y="Rate", data=annual_avg, palette="cool")
+plt.title("Average Inflation Expectation Rate by Year", fontsize=16)
+plt.xticks(rotation=45)
+plt.xlabel("Year", fontsize=14)
+plt.ylabel("Average Rate (%)", fontsize=14)
+plt.tight_layout()
+plt.show()
+
+
