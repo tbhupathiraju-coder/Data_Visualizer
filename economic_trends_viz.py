@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from datetime import datetime
 
 # Loaded the dataset
@@ -99,7 +100,7 @@ plt.show()
 #Visualization - 6
 #Histogram for Rate Distribution
 plt.figure(figsize=(10,6))
-sns.histoplot(df["Rate"], bins=30, kde=True, color="teal")
+sns.histplot(df["Rate"], bins=30, kde=True, color="teal")
 plt.title("Distribution of Inflation Expectation Rates", fontsize=16)
 plt.xlabel("Inflation Expectation Rate (%)", fontsize=14)
 plt.ylabel("Frequency", fontsize=14)
@@ -108,23 +109,27 @@ plt.show()
 
 #Visualization - 7
 #Scatter Plot with Regression Line
+df["Date_Num"] = (df["Date"] - df["Date"].min()).dt.days
 plt.figure(figsize=(12,6))
-sns.regplot(x="Date", y="Rate", data=df, scatter_kws={"s":10})
+sns.regplot(x="Date_Num", y="Rate", data=df, scatter_kws={"s":10})
 plt.title("Scatter Plot with Regression of Inflation Rate Over Time", fontsize=16)
-plt.xlabel("Year", fontsize=14)
+plt.xlabel("Days Since 2020-10-26", fontsize=14)
 plt.ylabel("Inflation Expectation Rate (%)", fontsize=14)
 plt.tight_layout()
 plt.show()
 
 #Visualization - 8
 #Pie Chart of Average Inflation by Year
+explode = [0.05]*len(annual_avg)
 plt.figure(figsize=(8,8))
 plt.pie(
     annual_avg["Rate"],
     labels=annual_avg["Year"],
     autopct="%1.1f%%",
     startangle=140,
-    colors=plt.cm.plasma(np.linespace(0, 1, len(annual_avg)))
+    colors=plt.cm.plasma(np.linspace(0, 1, len(annual_avg))),
+    explode=explode,
+    wedgeprops={"edgecolor":"black", "linewidth":1.5}
 )
 plt.title("Proportion of Average Inflation Expectations by Year")
 plt.tight_layout()
@@ -133,5 +138,35 @@ plt.show()
 #Visualization - 9
 #Main Trends Highlight
 plt.figure(figsize=(12,6))
+plt.plot(df["Date"], df["Rate"], color="steelblue", label="T10YIE Rate", linewidth=1)
+plt.fill_between(df["Date"], df["Rate"], color="lightblue", alpha=0.5)
+
+events = {
+    datetime(2022, 2, 24): "Russia-Ukraine Conflict",
+    datetime(2022, 3, 15): "Fed Rate Hike",
+    datetime(2022, 6, 1): "US Inflation Peaks"
+}
+
+for date, label in events.items():
+    color = "red" if "Conflict" in label else "orange" if "Fed" in label else "green"
+    plt.axvline(date, color=color, linestyle="--", alpha=0.7)
+
+    rate_on_date = df.loc[df["Date"] == date, "Rate"].values
+    if len(rate_on_date) > 0:
+        y_pos = rate_on_date[0]
+    else:
+        y_pos = df["Rate"].mean()
+
+    plt.text(date, df["Rate"].max()*0.5, label, rotation=90, color=color, fontsize=10, va="center")
+
+plt.xlim(datetime(2022,1,1), datetime(2022,12,31))
+plt.title("Inflation Expectation Over Time with Annotated Major Events", fontsize=16)
+plt.xlabel("Year", fontsize=14)
+plt.ylabel("Inflation Expectation (%)", fontsize=14)
+plt.legend()
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.tight_layout()
+plt.show()
+
 
 
