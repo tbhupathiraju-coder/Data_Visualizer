@@ -12,7 +12,7 @@ df = pd.read_csv(data_path)
 
 #Inspect the data
 print(df.head())
-print(df.info())
+#print(df.info())
 
 # Data Cleaning
 #Renaming the columns
@@ -28,11 +28,11 @@ df.dropna(inplace=True)
 df.sort_values(by="Date", inplace=True)
 #Sequential Indexing
 df.reset_index(drop=True, inplace=True)
-print(df.info())
+#print(df.info())
 
 #Statistical Summary
-print("Statistical Summary")
-print(df.describe())
+#print("Statistical Summary")
+#print(df.describe())
 
 #Data Visualizations
 #Visualization - 1
@@ -77,11 +77,11 @@ plt.show()
 #Visualization - 4
 #Box Plot by Year
 plt.figure(figsize=(12,6))
-sns.boxplot(x="Year", y="Rate", hue="Year", data=annual_avg, palette="cool", legend=False)
+sns.boxplot(x="Year", y="Rate", data=df, palette="cool", showfliers=False)
 plt.title("Distribution of Inflation Expectation Rate by Year", fontsize=16)
 plt.xticks(rotation=45)
 plt.xlabel("Year", fontsize=14)
-plt.ylabel("Inflation Expectation Raten(%)", fontsize=14)
+plt.ylabel("Inflation Expectation Rate(%)", fontsize=14)
 plt.tight_layout()
 plt.show()
 
@@ -90,7 +90,7 @@ plt.show()
 df["Month"] = df["Date"].dt.month
 monthly_avg = df.groupby(["Year", "Month"])["Rate"].mean().unstack()
 plt.figure(figsize=(12,6))
-sns.heatmap(monthly_avg, cmap="YlGnBu", annot=False)
+sns.heatmap(monthly_avg, cmap="YlGnBu", annot=True, fmt=".2f")
 plt.title("Heatmap of Monthly Average Inflation Rates", fontsize=16)
 plt.xlabel("Month", fontsize=14)
 plt.ylabel("Year", fontsize=14)
@@ -149,7 +149,7 @@ events = {
 
 for date, label in events.items():
     color = "red" if "Conflict" in label else "orange" if "Fed" in label else "green"
-    plt.axvline(date, color=color, linestyle="--", alpha=0.7)
+    plt.axvline(date, color=color, label=label, linestyle="--", alpha=0.7)
 
     rate_on_date = df.loc[df["Date"] == date, "Rate"].values
     if len(rate_on_date) > 0:
@@ -163,10 +163,31 @@ plt.xlim(datetime(2022,1,1), datetime(2022,12,31))
 plt.title("Inflation Expectation Over Time with Annotated Major Events", fontsize=16)
 plt.xlabel("Year", fontsize=14)
 plt.ylabel("Inflation Expectation (%)", fontsize=14)
-plt.legend()
+plt.legend().set_title("Major Events")
 plt.grid(True, linestyle='--', alpha=0.6)
 plt.tight_layout()
 plt.show()
 
+#Closure
+print("All 9 visualizations have been generated success fully.")
 
+#Extemes
+highest_rate = df.loc[df["Rate"].idxmac()]
+lowest_rate = df.loc[df["Rate"].idxmin()]
+print(f"\nHighest Inflation Expectation Rate: {highest_rate['Rate']:.2f}% on {highest_rate['Date'].date()}")
+print(f"Lowest Inflation Expectation Rate: {lowest_rate['Rate']:.2f}% on {lowest_rate['Date'].date()}")
 
+#Saving the Results
+output_path = os.path.join(os.path.dirname(__file__), "Yealy_Average_Inflation_Expectation.csv")
+annual_avg.to_csv(output_path, index=False)
+print(f"\nYearly Average Inflation Expectation Rates saved as '{output_path}")
+
+#Cleanup
+for col in ["Data_Num", "Year", "Month", "Rolling_Mean_90"]:
+    df.pop(col, None)
+print("\nTemporary columns removed. Data cleaning complete.")
+
+#Citation
+print("\nSource: Federal Reserve Bank of St. Louis, 10-Year Breakeven Inflation Rate [T10YIE], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/T10YIE, October 26, 2025.")
+
+# End of Script
