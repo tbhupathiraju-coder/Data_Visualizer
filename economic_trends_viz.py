@@ -108,7 +108,9 @@ plt.tight_layout()
 plt.show()
 
 #Visualization - 7
-#Scatter Plot with Regression Line
+#Violin Plot by Year
+plt.figure(figsize=(12,6))
+sns.violinplot(x="Year", y="Rate", data=df, )
 df["Date_Num"] = (df["Date"] - df["Date"].min()).dt.days
 plt.figure(figsize=(12,6))
 sns.regplot(x="Date_Num", y="Rate", data=df, scatter_kws={"s":10})
@@ -142,13 +144,14 @@ plt.plot(df["Date"], df["Rate"], color="steelblue", label="T10YIE Rate", linewid
 plt.fill_between(df["Date"], df["Rate"], color="lightblue", alpha=0.5)
 
 events = {
+    datetime(2020, 3, 11): "COVID-19 Pandemic Declared",
     datetime(2022, 2, 24): "Russia-Ukraine Conflict",
     datetime(2022, 3, 15): "Fed Rate Hike",
     datetime(2022, 6, 1): "US Inflation Peaks"
 }
 
 for date, label in events.items():
-    color = "red" if "Conflict" in label else "orange" if "Fed" in label else "green"
+    color = "red" if "COVID" in label else "orange" if "Conflict" in label else "green" if "Hike" in label else "purple"
     plt.axvline(date, color=color, label=label, linestyle="--", alpha=0.7)
 
     rate_on_date = df.loc[df["Date"] == date, "Rate"].values
@@ -159,7 +162,7 @@ for date, label in events.items():
 
     plt.text(date, df["Rate"].max()*0.5, label, rotation=90, color=color, fontsize=10, va="center")
 
-plt.xlim(datetime(2022,1,1), datetime(2022,12,31))
+plt.xlim(datetime(2020,1,1), datetime(2022,12,31))
 plt.title("Inflation Expectation Over Time with Annotated Major Events", fontsize=16)
 plt.xlabel("Year", fontsize=14)
 plt.ylabel("Inflation Expectation (%)", fontsize=14)
@@ -168,11 +171,45 @@ plt.grid(True, linestyle='--', alpha=0.6)
 plt.tight_layout()
 plt.show()
 
+#Visualization - 10
+#Standard Deviation Over Time
+plt.figure(figsize=(12,6))
+df["Volatility"] = df["Rate"].rolling(window=90, min_periods=1).std()
+plt.plot(df["Date"], df["Volatility"], color="lavender", linewidth=1.5)
+plt.fill_between(df["Date"], df["Volatility"], color="plum", alpha=0.5)
+plt.title("90-Day Rolling Std Dev of Volatility in Inflation Expectation", fontsize=16)
+plt.xlabel("Year", fontsize=14)
+plt.ylabel("Standard Deviation - Volatility (%)", fontsize=14)
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.tight_layout()
+plt.show()
+
+#Visualization - 11
+#Foreshadowing Future Trends w/ Linear Regression
+x = df["Date_Num"].values
+y = df["Rate"].values
+
+coeffs = np.polyfit(x, y, 1)
+slope, intercept = coeffs
+y_pred = slope * x + intercept
+
+plt.figure(figsize=(12,6))
+plt.scatter(x, y, s=10, label = "Rates", color="steelblue", alpha=0.6)
+plt.plot(x, y_pred, color="red", linewidth=2, label=f"Trend Line: y={slope:.5f}x + {intercept:.2f}")
+plt.title("Scatter Plot with Linear Regression Trend Line", fontsize=16)
+plt.xlabel("Days Since 2015-10-26", fontsize=14)
+plt.ylabel("Inflation Expectation Rate (%)", fontsize=14)
+plt.legend()
+plt.grid(True, linestyle='--', alpha=0.6)
+plt.tight_layout()
+plt.show()
+
+
 #Closure
-print("All 9 visualizations have been generated success fully.")
+print("All 11 visualizations have been generated success fully.")
 
 #Extemes
-highest_rate = df.loc[df["Rate"].idxmac()]
+highest_rate = df.loc[df["Rate"].idxmax()]
 lowest_rate = df.loc[df["Rate"].idxmin()]
 print(f"\nHighest Inflation Expectation Rate: {highest_rate['Rate']:.2f}% on {highest_rate['Date'].date()}")
 print(f"Lowest Inflation Expectation Rate: {lowest_rate['Rate']:.2f}% on {lowest_rate['Date'].date()}")
@@ -183,8 +220,9 @@ annual_avg.to_csv(output_path, index=False)
 print(f"\nYearly Average Inflation Expectation Rates saved as '{output_path}")
 
 #Cleanup
-for col in ["Data_Num", "Year", "Month", "Rolling_Mean_90"]:
-    df.pop(col, None)
+for col in ["Date_Num", "Year", "Month", "Rolling_Mean_90"]:
+    if col in df.columns:
+        df.pop(col)
 print("\nTemporary columns removed. Data cleaning complete.")
 
 #Citation
