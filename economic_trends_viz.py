@@ -1,3 +1,8 @@
+#This project analyzes and visualizes the 10 Year Inflation Expectation Rate (T10YIE) using data from the Federal Reserve Bank of St. Louis
+#It includes data cleaning, compares averages, and generates 11 different visualizations to illustrate economic trends over time.
+#Some of the graphs include line plots, bar charts, box plots, heatmaps, histograms, violin plots, pie charts, and regression analysis to show trends in multiple ways. 
+# It also highlights major ecnonomic events! 
+
 # Imported necessary libraries
 import os
 import pandas as pd
@@ -9,6 +14,11 @@ from datetime import datetime
 # Loaded the dataset
 data_path = os.path.join(os.path.dirname(__file__), 'T10YIE.csv')
 df = pd.read_csv(data_path)
+
+print("Welcome to the Economic Trend Visualizer. This project visualizes the 10-Year Inflation Expectation Rate (T10YIE) using data from the Federal Reserve Bank of St. Louis.")
+print("Explores trends, cleans data, and points out major economic events")
+print("Gain insights into inflation expectations over time through informative visualizations")
+
 
 #Inspect the data
 print(df.head())
@@ -108,15 +118,13 @@ plt.tight_layout()
 plt.show()
 
 #Visualization - 7
-#Violin Plot by Year
+#Violin Plot of Inflation Expectation by Year
 plt.figure(figsize=(12,6))
-sns.violinplot(x="Year", y="Rate", data=df, )
-df["Date_Num"] = (df["Date"] - df["Date"].min()).dt.days
-plt.figure(figsize=(12,6))
-sns.regplot(x="Date_Num", y="Rate", data=df, scatter_kws={"s":10})
-plt.title("Scatter Plot with Regression of Inflation Rate Over Time", fontsize=16)
-plt.xlabel("Days Since 2020-10-26", fontsize=14)
+sns.violinplot(x="Year", y="Rate", data=df, palette="viridis", inner="quartile", linewidth=1.5)
+plt.title("Violin Plot of Inflation Expectation by Year", fontsize=16)
+plt.xlabel("Year", fontsize=14)
 plt.ylabel("Inflation Expectation Rate (%)", fontsize=14)
+plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
 
@@ -177,7 +185,7 @@ plt.figure(figsize=(12,6))
 df["Volatility"] = df["Rate"].rolling(window=90, min_periods=1).std()
 plt.plot(df["Date"], df["Volatility"], color="lavender", linewidth=1.5)
 plt.fill_between(df["Date"], df["Volatility"], color="plum", alpha=0.5)
-plt.title("90-Day Rolling Std Dev of Volatility in Inflation Expectation", fontsize=16)
+plt.title("Volatility in Inflation Expectations", fontsize=16)
 plt.xlabel("Year", fontsize=14)
 plt.ylabel("Standard Deviation - Volatility (%)", fontsize=14)
 plt.grid(True, linestyle='--', alpha=0.6)
@@ -185,7 +193,8 @@ plt.tight_layout()
 plt.show()
 
 #Visualization - 11
-#Foreshadowing Future Trends w/ Linear Regression
+#Forecasting Future Trends w/ Linear Regression
+df["Date_Num"] = (df["Date"] - df["Date"].min()).dt.days
 x = df["Date_Num"].values
 y = df["Rate"].values
 
@@ -206,18 +215,19 @@ plt.show()
 
 
 #Closure
-print("All 11 visualizations have been generated success fully.")
+plt.close('all')
+print("All 11 visualizations have been generated successfully.")
 
-#Extemes
+#Extremes
 highest_rate = df.loc[df["Rate"].idxmax()]
 lowest_rate = df.loc[df["Rate"].idxmin()]
 print(f"\nHighest Inflation Expectation Rate: {highest_rate['Rate']:.2f}% on {highest_rate['Date'].date()}")
 print(f"Lowest Inflation Expectation Rate: {lowest_rate['Rate']:.2f}% on {lowest_rate['Date'].date()}")
 
 #Saving the Results
-output_path = os.path.join(os.path.dirname(__file__), "Yealy_Average_Inflation_Expectation.csv")
+output_path = os.path.join(os.path.dirname(__file__), "Yearly_Average_Inflation_Expectation.csv")
 annual_avg.to_csv(output_path, index=False)
-print(f"\nYearly Average Inflation Expectation Rates saved as '{output_path}")
+print(f"\nYearly Average Inflation Expectation Rates saved as '{output_path}'")
 
 #Cleanup
 for col in ["Date_Num", "Year", "Month", "Rolling_Mean_90"]:
@@ -229,3 +239,8 @@ print("\nTemporary columns removed. Data cleaning complete.")
 print("\nSource: Federal Reserve Bank of St. Louis, 10-Year Breakeven Inflation Rate [T10YIE], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/T10YIE, October 26, 2025.")
 
 # End of Script
+
+#Disclaimer on timing:
+#This project took longer than expeted as it was my first time creating multiple Python visualizations at this scope. 
+#Debugging syntax errors, re-importing and cleaning the 10-year dataset (after mistakenly using a 5-hour one), adjusting code, and adding 2 more visualizations for insight extended the time.
+#Overall, I spent 11+ hours coding, debugging, and learning how to create meaningful graphs using Mathplotlib and Seaborn. Despite the challenges, it was a valuable learning experience and I'm pleased with the final results.
