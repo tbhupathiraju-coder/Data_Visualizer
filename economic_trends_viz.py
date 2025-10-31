@@ -25,6 +25,7 @@ print(df.head())
 #print(df.info())
 
 # Data Cleaning
+#Minimal AI assistance
 #Renaming the columns
 df.columns = ["Date", "Rate"]
 #Converting the date column to datatime format
@@ -158,6 +159,7 @@ events = {
     datetime(2022, 6, 1): "US Inflation Peaks"
 }
 
+#Minimal AI assistance in the for loop
 for date, label in events.items():
     color = "red" if "COVID" in label else "orange" if "Conflict" in label else "green" if "Hike" in label else "purple"
     plt.axvline(date, color=color, label=label, linestyle="--", alpha=0.7)
@@ -230,6 +232,7 @@ annual_avg.to_csv(output_path, index=False)
 print(f"\nYearly Average Inflation Expectation Rates saved as '{output_path}'")
 
 #Cleanup
+#Minimal AI assistance in the debugging portion here
 for col in ["Date_Num", "Year", "Month", "Rolling_Mean_90"]:
     if col in df.columns:
         df.pop(col)
@@ -244,3 +247,6 @@ print("\nSource: Federal Reserve Bank of St. Louis, 10-Year Breakeven Inflation 
 #This project took longer than expeted as it was my first time creating multiple Python visualizations at this scope. 
 #Debugging syntax errors, re-importing and cleaning the 10-year dataset (after mistakenly using a 5-hour one), adjusting code, and adding 2 more visualizations for insight extended the time.
 #Overall, I spent 11+ hours coding, debugging, and learning how to create meaningful graphs using Mathplotlib and Seaborn. Despite the challenges, it was a valuable learning experience and I'm pleased with the final results.
+
+#Additional Note:
+#I used minimul AI tools to help in the startup/little bit in the end code as I am new to Python coding. Most of it was my own work and researching, after getting a sense and guideline from the starting code snippets.
