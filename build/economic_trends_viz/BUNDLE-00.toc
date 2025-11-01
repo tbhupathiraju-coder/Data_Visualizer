@@ -1,0 +1,4 @@
+([('economic_trends_viz',
+   '/Users/triyabhupathiraju/Athena '
+   'Projects/Data_Visualizer/dist/economic_trends_viz',
+   'EXECUTABLE')],)
