@@ -356,7 +356,6 @@ st.pyplot(fig)
 
 
 #Closure
-ax.close('all')
 st.success("All 11 visualizations have been generated successfully.")
 
 #Extremes
@@ -364,7 +363,7 @@ st.subheader("Stats")
 highest_rate = df.loc[df["Rate"].idxmax()]
 lowest_rate = df.loc[df["Rate"].idxmin()]
 st.write(f"\nHighest Inflation Expectation Rate: {highest_rate['Rate']:.2f}% on {highest_rate['Date'].date()}")
-st.write(f"Lowest Inflation Expectation Rate: {lowest_rate['Rate']:.2f}% on {lowest_rate['Date'].date()}")
+st.write(f"Lowest Inflation Expectation Rcd : {lowest_rate['Rate']:.2f}% on {lowest_rate['Date'].date()}")
 
 #Saving the Results
 output_path = os.path.join(os.path.dirname(__file__), "Yearly_Average_Inflation_Expectation.csv")
