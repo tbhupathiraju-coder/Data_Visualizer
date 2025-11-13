@@ -342,6 +342,7 @@ st.subheader("Scatter Plot with Linear Regression Trend Line")
 df["Date_Num"] = (df["Date"] - df["Date"].min()).dt.days
 x = df["Date_Num"].values
 y = df["Rate"].values
+#https://data36.com/linear-regression-in-python-numpy-polyfit/ for slope/linear regression basics
 slope, intercept = np.polyfit(x, y, 1)
 y_pred = slope * x + intercept
 fig, ax = plt.subplots(figsize=(12,6))
@@ -385,7 +386,10 @@ print("\nSource: Federal Reserve Bank of St. Louis, 10-Year Breakeven Inflation 
 #Disclaimer on timing:
 #This project took longer than expeted as it was my first time creating multiple Python visualizations at this scope. 
 #Debugging syntax errors, re-importing and cleaning the 10-year dataset (after mistakenly using a 5-hour one), adjusting code, and adding 2 more visualizations for insight extended the time.
-#Overall, I spent 11+ hours coding, debugging, and learning how to create meaningful graphs using Mathplotlib and Seaborn. Despite the challenges, it was a valuable learning experience and I'm pleased with the final results.
+#Overall, I spent 14+ hours coding, debugging, and learning how to create meaningful graphs using Mathplotlib and Seaborn. Despite the challenges, it was a valuable learning experience and I'm pleased with the final results.
 
 #Additional Note:
 #I used minimul AI tools to help in the startup/little bit in the end code as I am new to Python coding. Most of it was my own work and researching, after getting a sense and guideline from the starting code snippets.
+#Additionally, I used multiple youtube tutorials, online websites, and basic ai for debugging/formatting when changing from straight-up python to streamlit, as i struggled in the beginning bc i nvr used the tool before.
+#Starting off the streamlit, i learnt/researched by using websites such as these (not all but the most helpful/used: https://sarahleaschrch.substack.com/p/streamlit-101-create-a-simple-data, https://medium.com/tech-blogs-by-nest-digital/a-powerful-duo-for-data-visualization-streamlit-and-plotly-58894dee4b6d)
+#Also used this website: https://dev.to/jamesbmour/streamlit-part-6-mastering-data-visualization-and-chart-types-kip A LOT for formatting/structuring/learning different types of visualizations. 
